@@ -106,7 +106,9 @@ exports.notificationMail = async (userData) => {
 
 exports.channelNotificationEmail = async (userData) => {
   let name = userData?.Username;
-  let msg = `you are assigned in WT channel by MasterAdmin`;
+  let msg = `You have been assign in FreedomTube channel by the WheelsTube Admin.
+  To access your channel, log into your WheelsTube account,click on the
+  WheelsTube icon at the top of the page,then click on My Channel.`;
   let redirectUrl = `${environment.FRONTEND_URL}`;
 
   const mailObj = {
@@ -131,9 +133,9 @@ exports.communityApproveEmail = async (profileId, isApprove) => {
       userData[0]?.FirstName + " " + userData[0]?.LastName;
     let msg = "";
     if (isApprove === "Y") {
-      msg = `Your Car Sales has been approved by Master Admin.`;
+      msg = `WheelsTube has approved your Car sales application.`;
     } else {
-      msg = `Your Car Sales has been unapproved by Master Admin.`;
+      msg = `WheelsTUbe has unapproved your Car sales application.`;
     }
     let redirectUrl = `${environment.FRONTEND_URL}`;
     const mailObj = {
