@@ -10,7 +10,6 @@ const { getPagination, getCount, getPaginationData } = require("../helpers/fn");
 const { Encrypt } = require("../helpers/cryptography");
 
 exports.login = async function (req, res) {
-  console.log("jkfhguysdhfgbdf");
   const { email, password } = req.body;
   const user = await User.findByUsernameAndEmail(email);
   // console.log(user);
@@ -446,7 +445,7 @@ exports.verification = function (req, res) {
     const token = await generateJwtToken(data);
     console.log(token);
     return res.redirect(
-      `${environments.FRONTEND_URL}/healing-registration?token=${token}`
+      `${environments.FRONTEND_URL}/wheels-registration?token=${token}`
     );
   });
 };

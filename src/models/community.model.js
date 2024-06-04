@@ -18,22 +18,22 @@ var Community = function (community) {
   this.Zip = community?.Zip;
   this.County = community?.County;
   this.address = community?.address;
+  this.applicationType = community?.applicationType;
 };
 
-Community.findAllCommunity = async function (
-  selectedCard,
-  selectedCountry,
-  selectedState,
-  selectedAreas
-) {
+Community.findAllCommunity = async function (selectedCard, selectedAreas) {
   console.log(selectedCard, "selectedCard");
   let whereCondition = `c.pageType = 'community' AND c.isApprove = 'Y' ${
-    selectedCountry || selectedState
-      ? `AND c.Country LIKE '%${selectedCountry}%' AND c.State LIKE '%${selectedState}%'`
-      : ""
+    // selectedCountry || selectedState
+    //   ? `AND c.Country LIKE '%${selectedCountry}%' AND c.State LIKE '%${selectedState}%'`
+    //   : ""
+    selectedCard?.zip ? `AND c.Zip = '%${selectedCard?.zip}%'` : ""
   }`;
-  if (selectedCard) {
-    whereCondition += ` AND pe.eId in (${selectedCard})`;
+  if (selectedCard?.name) {
+    whereCondition += ` AND c.CommunityName = '${selectedCard.name}'`;
+  }
+  if (selectedCard?.id) {
+    whereCondition += ` AND pe.eId = ${selectedCard.id}`;
   }
   if (selectedAreas?.length) {
     whereCondition += ` AND pa.aId in (${selectedAreas})`;
