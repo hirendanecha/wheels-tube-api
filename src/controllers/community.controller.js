@@ -61,9 +61,9 @@ exports.createCommunity = async function (req, res) {
         return utils.send500(res, err);
       } else {
         if (community) {
-          const emphasisData = req.body.emphasis;
+          // const emphasisData = req.body.emphasis;
           const areasData = req.body.areas;
-          const emphasis = await Community.addEmphasis(community, emphasisData);
+          // const emphasis = await Community.addEmphasis(community, emphasisData);
           const areas = await Community.addAreas(community, areasData);
           console.log(emphasis, areas);
         }

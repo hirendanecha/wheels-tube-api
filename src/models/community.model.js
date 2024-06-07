@@ -22,53 +22,38 @@ var Community = function (community) {
 };
 
 Community.findAllCommunity = async function (selectedCard, selectedAreas) {
-  console.log(selectedCard, "selectedCard");
-  let whereCondition = `c.pageType = 'community' AND c.isApprove = 'Y' ${
-    // selectedCountry || selectedState
-    //   ? `AND c.Country LIKE '%${selectedCountry}%' AND c.State LIKE '%${selectedState}%'`
-    //   : ""
-    selectedCard?.zip ? `AND c.Zip = '%${selectedCard?.zip}%'` : ""
-  }`;
-  if (selectedCard?.name) {
-    whereCondition += ` AND c.CommunityName = '${selectedCard.name}'`;
-  }
-  if (selectedCard?.id) {
-    whereCondition += ` AND pe.eId = ${selectedCard.id}`;
-  }
-  if (selectedAreas?.length) {
-    whereCondition += ` AND pa.aId in (${selectedAreas})`;
-  }
-  // const searchCount = await executeQuery(
-  //   `SELECT count(c.Id) as count FROM community as c WHERE ${whereCondition}`
-  // );
-  // const searchData = await executeQuery(
-  //   `select c.*,count(cm.profileId) as members,c.Country,c.City,c.State,c.Zip,c.County from community as c left join communityMembers as cm on cm.communityId = c.Id left join profile as p on p.ID = c.profileId where ${whereCondition} GROUP BY c.Id order by c.creationDate desc limit ? offset ?`,
-  //   [limit, offset]
-  // );
-  // return {
-  //   count: searchCount?.[0]?.count || 0,
-  //   data: searchData,
-  // };
   let query = "";
-  query = `select c.* from community as c left join practitioner_emphasis as pe on pe.communityId = c.Id left join practitioner_area as pa on pa.communityId = c.Id where ${whereCondition} GROUP BY c.Id order by c.Id desc;`;
-  // const communityList = await executeQuery(query, [id]);
-  console.log("query===>", query);
+  let whereCondition = `c.pageType = 'community' AND c.isApprove = 'Y' ${
+    selectedCard?.country
+      ? `AND c.Country LIKE '%${selectedCard?.country}%'`
+      : ""
+  }`;
+  if (selectedCard?.state) {
+    whereCondition += ` AND c.State LIKE '%${selectedCard?.state}%'`;
+  }
+  if (selectedCard?.zip) {
+    whereCondition += ` AND c.Zip LIKE '%${selectedCard?.zip}%'`;
+  }
+  if (selectedCard?.name) {
+    whereCondition += ` AND c.CommunityName LIKE '%${selectedCard.name}%'`;
+  }
+  if (selectedCard?.type) {
+    whereCondition += ` AND c.applicationType = '${selectedCard.type}'`;
+  }
+  query = `select c.* from community as c where ${whereCondition} group by c.Id order by c.Id desc;`;
   const communityList = await executeQuery(query);
-  // console.log(communityList);
   const localCommunities = [];
   for (const key in communityList) {
     // const query1 =
-    //   "select cm.profileId from communityMembers as cm where cm.communityId = ?;";
-    const query1 =
-      "select pe.eId,eh.name from practitioner_emphasis as pe left join emphasis_healing as eh on eh.eId = pe.eId where pe.communityId =? ";
+    //   "select pe.eId,eh.name from practitioner_emphasis as pe left join emphasis_healing as eh on eh.eId = pe.eId where pe.communityId =? ";
     const query2 =
       "select pa.aId,ah.name from practitioner_area as pa left join area_healing as ah on ah.aId = pa.aId where pa.communityId =? ";
     if (Object.hasOwnProperty.call(communityList, key)) {
       const community = communityList[key];
       const values1 = [community.Id];
-      const emphasis = await executeQuery(query1, values1);
+      // const emphasis = await executeQuery(query1, values1);
       const areas = await executeQuery(query2, values1);
-      community.emphasis = emphasis;
+      // community.emphasis = emphasis;
       community.areas = areas;
       localCommunities.push(community);
     }
