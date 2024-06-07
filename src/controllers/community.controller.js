@@ -65,7 +65,6 @@ exports.createCommunity = async function (req, res) {
           const areasData = req.body.areas;
           // const emphasis = await Community.addEmphasis(community, emphasisData);
           const areas = await Community.addAreas(community, areasData);
-          console.log(emphasis, areas);
         }
         return res.json({
           error: false,
