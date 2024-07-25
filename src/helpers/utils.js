@@ -155,18 +155,19 @@ exports.cancelAppointmentNotificationMail = async (id, dealerName) => {
     "select u.Email,p.FirstName,p.LastName,p.Username from users as u left join profile as p on p.UserID = u.Id where p.ID =?";
   const values = [id];
   const [data] = await this.executeQuery(query, values);
-  let name = data?.Username || userData.FirstName;
+  let name = data?.Username || data?.FirstName;
   let msg = `Your appointment with ${dealerName} has been cancelled, please book another slot!`;
   let redirectUrl = `${environment.FRONTEND_URL}`;
+  if (data) {
+    const mailObj = {
+      email: data?.Email,
+      subject: "Wheels notification",
+      root: "../email-templates/notification.ejs",
+      templateData: { name: name, msg: msg, url: redirectUrl },
+    };
 
-  const mailObj = {
-    email: data.Email,
-    subject: "Healing notification",
-    root: "../email-templates/notification.ejs",
-    templateData: { name: name, msg: msg, url: redirectUrl },
-  };
-
-  await email.sendMail(mailObj);
+    await email.sendMail(mailObj);
+  }
   return;
 };
 
@@ -179,7 +180,7 @@ exports.sendAppointmentMailToUser = async (data) => {
     "select u.Email,p.FirstName,p.LastName,p.Username from users as u left join profile as p on p.UserID = u.Id where p.ID =?";
   const values1 = [data.dealerProfileId];
   const [practitionerData] = await this.executeQuery(query1, values1);
-  console.log("practitionerData", practitionerData);
+  console.log("practitionerData", data);
   if (userData) {
     let name = `Hi ${userData.Username || userData.FirstName}`;
     let msg = "";
