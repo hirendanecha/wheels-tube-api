@@ -281,7 +281,10 @@ socket.config = (server) => {
     });
 
     socket.on("comments-on-post", async (params) => {
-      console.log(params);
+      logger.info("comment on post", {
+        method: "comment on post",
+        params: params,
+      });
       const data = await socketService.createComments(params);
       if (data.comments) {
         console.log("comments-on-post====>", data?.comments);
